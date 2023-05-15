@@ -15,4 +15,4 @@ def generate_random_cnf(num_vars, num_clauses):
 # Generate 10 random CNF formulas with 20 variables and 50 clauses
 for i in range(10):
     cnf = generate_random_cnf(20, 50)
-    cnf.to_file(f"cnf{i}.cnf")
+    cnf.to_file(f"input_cnfs/cnf{i}.cnf")

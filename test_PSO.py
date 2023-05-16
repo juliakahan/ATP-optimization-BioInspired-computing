@@ -4,6 +4,7 @@ import random
 from pyswarms.single.global_best import GlobalBestPSO
 from pyswarms.single.local_best import LocalBestPSO
 
+
 def generate_random_cnf(num_vars, num_clauses):
     # Generate random CNF formula with given number of variables and clauses
     cnf = CNF()

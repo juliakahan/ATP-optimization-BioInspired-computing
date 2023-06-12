@@ -27,6 +27,7 @@ def mini_sat(clauses):
 def mini_sat2(clauses, restart_strategy="glue"):
     solver = Minisat22(use_timer=True)
     solver.restart_strategy = restart_strategy
+    print(solver.restart_strategy)
 
     for clause in clauses:
         solver.add_clause(clause)
@@ -35,7 +36,7 @@ def mini_sat2(clauses, restart_strategy="glue"):
     time = solver.time_accum()
     model = solver.get_model()
 
-    print(f'Mini sat with restart strategy: {restart_strategy} result: {result} in {time:.11f} seconds')
+    print(f'Mini sat with restart strategy: {restart_strategy} result: {result}, stats: {solver.accum_stats()}')
     return model
 
 
@@ -72,25 +73,16 @@ def model_count(solver, clauses, vlimit=None, warm_start=False):
 
 if __name__ == '__main__':
     # clauses_t = read_clauses('dimcas.cnf')
-    clauses_t = read_clauses('input_cnfs/cnf10.cnf')
+    clauses_t = read_clauses('input_cnfs/cnf13.cnf')
 
-    # clauses_t = []
-    # for i in range(10, 15):
-    #     clauses_t.append(read_clauses(f'input_cnfs/cnf{i}.cnf'))
-
-    model_count("minisat22", clauses_t)
-    model_count("glucose3", clauses_t)
+    # model_count("minisat22", clauses_t)
+    # model_count("glucose3", clauses_t)
 
     model_minisat = mini_sat(clauses_t)
     model_glucose = glucose(clauses_t)
 
+    the_same_model("MiniSat", model_minisat, "Glucose", model_glucose)
 
-    # model_glue = mini_sat2(clauses_t, "glue")
-    # model_luby = mini_sat2(clauses_t, "luby")
-    # model_fixed = mini_sat2(clauses_t, "fixed")
-
-        # print('----------------------------------------------')
-        # the_same_model("MiniSat", model_minisat, "Glucose", model_glucose)
     # the_same_model("MiniSat", model_minisat, "MiniSat with restart method glue", model_glue)
     # the_same_model("MiniSat", model_minisat, "MiniSat with restart method luby", model_luby)
     # the_same_model("MiniSat", model_minisat, "MiniSat with restart method fixed", model_fixed)

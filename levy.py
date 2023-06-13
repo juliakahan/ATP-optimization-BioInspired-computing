@@ -3,32 +3,30 @@ from math import sin, pi, gamma
 import numpy as np
 
 
-def cuckoo_search(n_nests, nd=15):
+def cuckoo_search(n_nests, obj_fun=1, n_eggs=15, n_iter=1000):
     # Współczynnik odkrycia
     pa = 0.25
 
-    N_IterTotal = 1000
-
     # Granice szukania
-    Lb = -5 * np.ones(nd)
-    Ub = 5 * np.ones(nd)
+    Lb = -5 * np.ones(n_eggs)
+    Ub = 5 * np.ones(n_eggs)
 
     # Losowe parametry inicjalizacyjne
-    nest = np.random.uniform(Lb, Ub, size=(n_nests, nd))
+    nest = np.random.uniform(Lb, Ub, size=(n_nests, n_eggs))
     fitness = 1e10 * np.ones(n_nests)
 
-    f_min, best_nest, nest, fitness = get_best_nest(nest, nest, fitness)
+    f_min, best_nest, nest, fitness = get_best_nest(nest, nest, fitness, obj_fun)
     N_iter = 0
 
     # Początek iteracji
-    for _ in range(N_IterTotal):
+    for _ in range(n_iter):
         # Generowanie nowych rozwiązań
         new_nest = get_cuckoos(nest, best_nest, Lb, Ub)
-        f_new, best_nest, nest, fitness = get_best_nest(nest, new_nest, fitness)
+        f_new, best_nest, nest, fitness = get_best_nest(nest, new_nest, fitness, obj_fun)
         N_iter += n_nests
 
         new_nest = empty_nests(nest, Lb, Ub, pa)
-        f_new, best_nest, nest, fitness = get_best_nest(nest, new_nest, fitness)
+        f_new, best_nest, nest, fitness = get_best_nest(nest, new_nest, fitness, obj_fun)
         N_iter += n_nests
 
         # Znalezienie najlepszego współczynnika
@@ -37,8 +35,8 @@ def cuckoo_search(n_nests, nd=15):
 
     # Wyświetlenie wyników
     print("Total number of iterations:", N_iter)
-    print("fmin:", f_min)
-    print("bestnest:", best_nest)
+    print("f min:", f_min)
+    print("best nest:", best_nest)
 
 
 # Zwróć nowe kukułki wykorzystując Loty Levy'ego
@@ -48,8 +46,7 @@ def get_cuckoos(nest, best, Lb, Ub):
 
     # Współczynnik Levy'ego
     beta = 3 / 2
-    sigma = (gamma(1 + beta) * sin(pi * beta / 2) / (gamma((1 + beta) / 2) * beta * 2 ** ((beta - 1) / 2))) ** (
-                1 / beta)
+    sigma = (gamma(1 + beta) * sin(pi * beta / 2) / (gamma((1 + beta) / 2) * beta * 2 ** ((beta - 1) / 2))) ** (1/beta)
 
     for j in range(n):
         s = nest[j, :]
@@ -62,16 +59,17 @@ def get_cuckoos(nest, best, Lb, Ub):
     return nest
 
 
-# Znajdź obecne najlepsze gniazdo
-def get_best_nest(nest, new_nest, fitness):
+# Znajdź aktualnie najlepsze gniazdo
+def get_best_nest(nest, new_nest, fitness, obj_fun):
     # Ocena nowych rozwiązań
     for j in range(nest.shape[0]):
-        f_new = f_obj(new_nest[j, :])
+        f_new = f_obj1(new_nest[j, :], obj_fun)
+
         if f_new <= fitness[j]:
             fitness[j] = f_new
             nest[j, :] = new_nest[j, :]
 
-    # Odnalezienie obecnie najlepszego rozwiązania
+    # Odnalezienie aktualnie najlepszego rozwiązania
     K = np.argmin(fitness)
     f_min = fitness[K]
     best = nest[K, :]
@@ -109,9 +107,48 @@ def simple_bounds(s, Lb, Ub):
 
 
 # Funkcja celu
-def f_obj(u):
-    return np.sum((u - 1) ** 2)
+def f_obj1(u, num=1):
+    if num == 1:
+        return np.sum(u ** 2)
+
+    # Funkcja Rosenbrocka
+    elif num == 2:
+        return np.sum(100 * (u[1:] - u[:-1] ** 2) ** 2 + (1 - u[:-1]) ** 2)
+
+    # Funkcja Michalewicza
+    elif num == 3:
+        z = 0
+        for i in range(u.shape[0]):
+            z += np.sin(u[i]) * np.sin((i + 1) * u[i] ** 2 / pi) ** 20
+        return -z
+
+    # Funckja Easom'a
+    elif num == 4:
+        return -np.cos(u[0]) * np.cos(u[1]) * np.exp(-((u[0] - pi) ** 2 + (u[1] - pi) ** 2))
+
+    # Funkcja Matyas'a
+    elif num == 5:
+        return 0.26 * (u[0] ** 2 + u[1] ** 2) - 0.48 * u[0] * u[1]
+
+    else:
+        print("Nie ma takiej funkcji")
+        return 0
 
 
 if __name__ == "__main__":
+    print("Funkcja celu")
     cuckoo_search(25)
+
+    print("\nFunkcja Rosenbrocka")
+    cuckoo_search(25, obj_fun=2)
+
+    print("\nFunkcja Michalewicza")
+    cuckoo_search(25, obj_fun=3)
+
+    print("\nFunkcja Easom'a")
+    cuckoo_search(25, obj_fun=4)
+
+    print("\nFunkcja Matyas'a")
+    cuckoo_search(25, obj_fun=5)
+
+

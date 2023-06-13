@@ -1,3 +1,4 @@
+import time
 from math import sin, pi, gamma
 
 import numpy as np
@@ -17,14 +18,18 @@ def cuckoo_search(n_nests, obj_fun=1, n_eggs=15, n_iter=1000):
 
     f_min, best_nest, nest, fitness = get_best_nest(nest, nest, fitness, obj_fun)
     N_iter = 0
+    start_time = time.time()
 
     # Początek iteracji
     for _ in range(n_iter):
         # Generowanie nowych rozwiązań
-        new_nest = get_cuckoos(nest, best_nest, Lb, Ub)
+        new_nest = get_cuckoos(nest, Lb, Ub)
+
+        # ewaluacja nowych rozwiązań
         f_new, best_nest, nest, fitness = get_best_nest(nest, new_nest, fitness, obj_fun)
         N_iter += n_nests
 
+        # zastąpienie najgorszych rozwiązań na podstawie współczynnika odkrycia (pa)
         new_nest = empty_nests(nest, Lb, Ub, pa)
         f_new, best_nest, nest, fitness = get_best_nest(nest, new_nest, fitness, obj_fun)
         N_iter += n_nests
@@ -33,23 +38,25 @@ def cuckoo_search(n_nests, obj_fun=1, n_eggs=15, n_iter=1000):
         if f_new < f_min:
             f_min = f_new
 
+    end_time = time.time()
+
     # Wyświetlenie wyników
-    # print("Total number of iterations:", N_iter)
+    print("Total number of iterations:", N_iter)
+    print("Time of work:", end_time - start_time)
     print("f min:", f_min)
     # print("best nest:", best_nest)
 
 
 # Zwróć nowe kukułki wykorzystując Loty Levy'ego
-def get_cuckoos(nest, best, Lb, Ub):
-    # Loty Levy'ego
+def get_cuckoos(nest, Lb, Ub):
     n = nest.shape[0]
-
     # Współczynnik Levy'ego
     beta = 3 / 2
+    # Współczynnik skali kroku Levy'ego
     sigma = (gamma(1 + beta) * sin(pi * beta / 2) / (gamma((1 + beta) / 2) * beta * 2 ** ((beta - 1) / 2))) ** (1/beta)
 
     for j in range(n):
-        s = nest[j, :]
+        s = nest[j, :]  # Aktualne gniazdo
         u = np.random.randn(s.shape[0]) * sigma
         v = np.random.randn(s.shape[0])
         step = u / abs(v) ** (1 / beta)
@@ -92,7 +99,7 @@ def empty_nests(nest, Lb, Ub, pa):
     return new_nest
 
 
-# Implementacja ograniczeń
+# Implementacja ograniczeń przestrzeni poszukiwań
 def simple_bounds(s, Lb, Ub):
     # Dolne
     ns_tmp = s.copy()
@@ -106,14 +113,16 @@ def simple_bounds(s, Lb, Ub):
     return ns_tmp
 
 
-# Funkcja celu
+# Funkcje celu
 def f_obj1(u, num=1):
+    # suma kwadratów
     if num == 1:
         return np.sum(u ** 2)
 
     # Funkcja Rosenbrocka
     elif num == 2:
         return 100 * (u[1] - u[0] ** 2) ** 2 + (1 - u[0]) ** 2
+
     # Funkcja Michalewicza
     elif num == 3:
         z = 0
@@ -135,7 +144,7 @@ def f_obj1(u, num=1):
 
 
 if __name__ == "__main__":
-    print("Funkcja celu")
+    print("\nFunkcja sumy kwadratów")
     cuckoo_search(25)
 
     print("\nFunkcja Rosenbrocka")

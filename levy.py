@@ -34,9 +34,9 @@ def cuckoo_search(n_nests, obj_fun=1, n_eggs=15, n_iter=1000):
             f_min = f_new
 
     # Wyświetlenie wyników
-    print("Total number of iterations:", N_iter)
+    # print("Total number of iterations:", N_iter)
     print("f min:", f_min)
-    print("best nest:", best_nest)
+    # print("best nest:", best_nest)
 
 
 # Zwróć nowe kukułki wykorzystując Loty Levy'ego
@@ -113,8 +113,7 @@ def f_obj1(u, num=1):
 
     # Funkcja Rosenbrocka
     elif num == 2:
-        return np.sum(100 * (u[1:] - u[:-1] ** 2) ** 2 + (1 - u[:-1]) ** 2)
-
+        return 100 * (u[1] - u[0] ** 2) ** 2 + (1 - u[0]) ** 2
     # Funkcja Michalewicza
     elif num == 3:
         z = 0

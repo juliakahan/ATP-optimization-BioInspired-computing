@@ -1,0 +1,1 @@
+The directory with the csv tables for each of the solvers. Tables contain stats for each of the solvers for each of the problems.

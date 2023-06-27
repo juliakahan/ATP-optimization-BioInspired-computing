@@ -1,0 +1,15 @@
+CNF File,g3,g4,m22,mgh,lgl,If should be SAT
+cnfs/special/dimacs1.cnf,UNSAT,UNSAT,UNSAT,UNSAT,UNSAT,UNSAT
+cnfs/special/dimacs2.cnf,SAT,SAT,SAT,SAT,SAT,SAT
+cnfs/special/dimacs3.cnf,UNSAT,UNSAT,UNSAT,UNSAT,UNSAT,UNKNOWN
+cnfs/special/dimacs4.cnf,UNSAT,UNSAT,UNSAT,UNSAT,UNSAT,UNSAT
+cnfs/special/dimacs5.cnf,UNSAT,UNSAT,UNSAT,UNSAT,UNSAT,UNSAT
+cnfs/special/dimacs6.cnf,UNSAT,UNSAT,UNSAT,UNSAT,UNSAT,UNSAT
+cnfs/special/dimacs7.cnf,SAT,SAT,SAT,SAT,SAT,UNKNOWN
+cnfs/special/dimacs8.cnf,UNSAT,UNSAT,UNSAT,UNSAT,UNSAT,SAT
+cnfs/randomly_generated/cnf.cnf,UNSAT,UNSAT,UNSAT,UNSAT,UNSAT,UNKNOWN
+cnfs/randomly_generated/cnf2.cnf,UNSAT,UNSAT,UNSAT,UNSAT,UNSAT,UNKNOWN
+cnfs/randomly_generated/cnf3.cnf,UNSAT,UNSAT,UNSAT,UNSAT,UNSAT,UNKNOWN
+cnfs/randomly_generated/cnf4.cnf,UNSAT,UNSAT,UNSAT,UNSAT,UNSAT,UNKNOWN
+cnfs/randomly_generated/cnf5.cnf,UNSAT,UNSAT,UNSAT,UNSAT,UNSAT,UNKNOWN
+cnfs/randomly_generated/cnf6.cnf,UNSAT,UNSAT,UNSAT,UNSAT,UNSAT,UNKNOWN

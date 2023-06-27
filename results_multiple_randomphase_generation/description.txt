@@ -1,0 +1,1 @@
+For each solver and each file, if the problem is satisfiable then we generate 10 sets of random phases and check the performance of the particular solver.

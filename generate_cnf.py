@@ -21,6 +21,6 @@ if __name__ == "__main__":
     num_clauses = 50
     # clause_length = 200
 
-    for i in range(2):
+    for i in range(10):
         cnf = generate_random_cnf(num_vars, num_clauses)
-        cnf.to_file(f"input_cnfs/cnf{i+11}.cnf")
+        cnf.to_file(f"input_cnfs/cnf{20_50}.cnf")

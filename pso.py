@@ -47,22 +47,8 @@ def pso_sat_solver(num_particles, num_iterations, num_variables):
 
     return global_best_position
 
-# Przykładowe użycie
-num_particles = 50  # liczba cząsteczek w roju
-num_iterations = 100  # liczba iteracji w algorytmie PSO
-num_variables = 50  # liczba zmiennych w SAT problemie
-
-best_assumptions = pso_sat_solver(num_particles, num_iterations, num_variables)
-
-# Przekształcenie założeń do formatu [1, -2, 4, 5]
-assumptions = [variable for variable in best_assumptions if variable > 0]
-
-# Wykorzystanie uzyskanych założeń w solverze MiniSat
-solver = Minisat22()
-
-
 # Otwieranie pliku CNF
-with open("/Users/juliakahan/PycharmProjects/pythonProject6/input_cnfs/cnf11.cnf", "r") as cnf_file:
+with open("/Users/juliakahan/PycharmProjects/pythonProject6/input_cnfs/cnf2050.cnf", "r") as cnf_file:
     cnf_lines = cnf_file.readlines()
 
 # # Usuwanie komentarzy
@@ -73,7 +59,20 @@ header = cnf_lines[0].split()
 num_vars = int(header[2])
 num_clauses = int(header[3])
 
-# Inicjalizowanie solvera
+# Przykładowe użycie
+
+num_particles = 50  # liczba cząsteczek w roju
+num_iterations = 100  # liczba iteracji w algorytmie PSO
+num_variables = num_vars # liczba zmiennych w SAT problemie
+
+best_assumptions = pso_sat_solver(num_particles, num_iterations, num_variables)
+print(best_assumptions)
+# Przekształcenie założeń do formatu
+assumptions = [variable for variable in best_assumptions]
+print(assumptions)
+
+# Wykorzystanie uzyskanych założeń w solverze MiniSat
+solver = Minisat22()
 
 # Dodawanie klauzul
 for line in cnf_lines[1:]:
@@ -85,5 +84,26 @@ if solver.solve(assumptions=assumptions):
     print("Rozwiązanie znalezione:")
     model = solver.get_model()
     print(model)
+    time = solver.time_accum()
+    stats = solver.accum_stats()
+    print(f"stats:{stats}")
+
 else:
     print("Nie znaleziono rozwiązania.")
+    time = solver.time_accum()
+    stats = solver.accum_stats()
+    print(f"stats:{stats}")
+
+if solver.solve():
+    print("Rozwiązanie znalezione: ")
+    model = solver.get_model()
+    print(model)
+    time = solver.time_accum()
+    stats = solver.accum_stats()
+    print(f"stats:{stats}")
+
+else:
+    print("Nie znaleziono rozwiązania.")
+    time = solver.time_accum()
+    stats = solver.accum_stats()
+    print(f"stats:{stats}")

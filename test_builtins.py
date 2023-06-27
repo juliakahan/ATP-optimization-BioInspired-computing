@@ -73,7 +73,7 @@ def model_count(solver, clauses, vlimit=None, warm_start=False):
 
 if __name__ == '__main__':
     # clauses_t = read_clauses('dimacs.cnf')
-    clauses_t = read_clauses('input_cnfs/cnf13.cnf')
+    clauses_t = read_clauses('cnfs/special/dimacs7.cnf')
 
     # model_count("minisat22", clauses_t)
     # model_count("glucose3", clauses_t)

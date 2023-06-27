@@ -1,0 +1,2 @@
+CNF File,g3 with Random Phases,g3 without Random Phases,g3 Stats,g3 Time,m22 with Random Phases,m22 without Random Phases,m22 Stats,m22 Time,mgh with Random Phases,mgh without Random Phases,mgh Stats,mgh Time
+cnfs/special/dimacs7.cnf,SAT (Random Phases),1,14,66,753,0.0,SAT (Without Random Phases),1,18,143,1405,0.0,SAT (Random Phases),1,14,66,765,0.0,SAT (Without Random Phases),1,6,125,882,0.0,SAT (Random Phases),1,22,79,1061,0.0,SAT (Without Random Phases),1,6,125,882,0.0

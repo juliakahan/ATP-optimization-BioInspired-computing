@@ -45,15 +45,24 @@ def solve(cnf_lines, num_vars, num_clauses, random_phases, solver_name):
 SATS = ['cnfs/special/dimacs2.cnf','cnfs/special/dimacs8.cnf', 'cnfs/special/dimacs9.cnf']
 unknown = ['cnfs/special/dimacs3.cnf', 'cnfs/special/dimacs7.cnf', 'cnfs/randomly_generated/cnf.cnf', 'cnfs/randomly_generated/cnf2.cnf', 'cnfs/randomly_generated/cnf3.cnf', 'cnfs/randomly_generated/cnf4.cnf', 'cnfs/randomly_generated/cnf5.cnf', 'cnfs/randomly_generated/cnf6.cnf']
 UNSATS = ['cnfs/special/dimacs1.cnf', 'cnfs/special/dimacs4.cnf', 'cnfs/special/dimacs5.cnf', 'cnfs/special/dimacs6.cnf']
+
+#TODO: modify method so that each of the solvers has the same set of random phases per file
 def generate_csv_table(cnf_files, solver_names):
+    phases = {}
     for solver_name in solver_names:
         with open(f"results_separate_solvers/{solver_name}_results.csv", mode="w", newline="") as file:
             writer = csv.writer(file)
             header = ["CNF File", "Random Phases", "Restarts", "Conflicts", "Decisions", "Propagations", "Variables", "Clauses",  "If should be SAT?"]
             writer.writerow(header)
+
             for cnf_file in cnf_files:
                 cnf_lines, num_vars, num_clauses = parse_open_cnf(cnf_file)
-                random_phases = generate_random_phases(num_vars)
+
+                rand_ph = generate_random_phases(num_vars)
+                if cnf_file not in phases:
+                    phases[cnf_file] = rand_ph
+                random_phases = phases[cnf_file]
+
                 model_with_random, stats_with_random, time_with_random = solve(cnf_lines, num_vars, num_clauses, random_phases, solver_name)
                 model_without_random, stats_without_random, time_without_random = solve(cnf_lines, num_vars, num_clauses, None, solver_name)
                 if model_with_random is not None:
@@ -68,7 +77,6 @@ def generate_csv_table(cnf_files, solver_names):
                 else:
                     row = [cnf_file, random_phases, "-", "-", "-", "-", "-", num_vars, num_clauses]
                     writer.writerow(row)
-
 
                 if model_without_random is not None:
                     row = [cnf_file, "None", stats_without_random["restarts"], stats_without_random["conflicts"], stats_without_random["decisions"], stats_without_random["propagations"], num_vars, num_clauses]
@@ -93,14 +101,18 @@ generate_csv_table(cnf_files, solver_names)
 # print("MinisatGH")
 # solve(cnf_lines, num_vars, num_clauses, random_phases, "mgh")
 #
-
+#TODO: modify the method so that each solver has the same set of randomly generated random phases per file
 def generate_csv_table_2(cnf_files, solver_names):
+    #init the dictionary storing the random phases set for each file
+    phases = {}
     for solver_name in solver_names:
         with open(f"results_multiple_randomphase_generation/{solver_name}_results.csv", mode="w", newline="") as file:
             writer = csv.writer(file)
             header = ["CNF File", "Random Phases", "Restarts", "Conflicts", "Decisions", "Propagations"]
             writer.writerow(header)
             for cnf_file in cnf_files:
+                phases_tab = []
+
                 cnf_lines, num_vars, num_clauses = parse_open_cnf(cnf_file)
                 model_without_random, stats_without_random, time_without_random = solve(cnf_lines, num_vars, num_clauses, None, solver_name)
                 if model_without_random is not None:
@@ -112,8 +124,19 @@ def generate_csv_table_2(cnf_files, solver_names):
                     else:
                         row.append("UNKNOWN")
                     writer.writerow(row)
+                    #create a tab of random phases for each file
                     for i in range(10):
-                        random_phases = generate_random_phases(num_vars)
+                        #if the file is not in the dictionary, generate a new set of random phases
+                        if cnf_file not in phases:
+                            rand_ph = generate_random_phases(num_vars)
+                            phases_tab.append(rand_ph)
+                            # phases[cnf_file] = phases_tab
+                        #if the file is in the dictionary, use the set of random phases already generated
+                        else:
+                            phases_tab = phases[cnf_file]
+                            rand_ph = phases_tab[i]
+
+                        random_phases = rand_ph
                         model_with_random, stats_with_random, time_with_random = solve(cnf_lines, num_vars, num_clauses, random_phases, solver_name)
                         if model_with_random is not None:
                             row = [cnf_file, random_phases, stats_with_random["restarts"], stats_with_random["conflicts"], stats_with_random["decisions"], stats_with_random["propagations"]]
@@ -133,6 +156,8 @@ def generate_csv_table_2(cnf_files, solver_names):
                             else:
                                 row.append("UNKNOWN")
                             writer.writerow(row)
+
+
                 else:
                     row = [cnf_file, "None", "-", "-", "-", "-", "-"]
                     if cnf_file in SATS:
@@ -143,7 +168,11 @@ def generate_csv_table_2(cnf_files, solver_names):
                         row.append("UNKNOWN")
                     writer.writerow(row)
 
+                #add the random phases set to the dictionary
+                phases[cnf_file] = phases_tab
+
 generate_csv_table_2(cnf_files, solver_names)
+
 
 def generate_csv_table_3(cnf_files, solver_names):
     with open(f"satisfiability_results_per_problem/results.csv", mode="w", newline="") as file:
